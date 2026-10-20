@@ -31,11 +31,12 @@ test("one tap picks a car, it drives on its own and a tap jumps", async ({
   await waitForScene(page, "race");
   await waitForScene(page, "hud");
 
+  // Software WebGL on CI runs at few frames a second: wait for the distance, not a time.
   const start = await ride(page);
-  await page.waitForTimeout(1500);
-  const later = await ride(page);
-  expect(later.distance).toBeGreaterThan(start.distance + 5);
-  expect(later.fuel).toBeLessThan(1);
+  await expect
+    .poll(async () => (await ride(page)).distance, { timeout: 15_000 })
+    .toBeGreaterThan(start.distance + 5);
+  expect((await ride(page)).fuel).toBeLessThan(1);
 
   // A tap on the road (not on a button) jumps.
   const size = page.viewportSize();
@@ -62,8 +63,9 @@ test("the siren lights up and pushes the car forward", async ({ page }) => {
   await page.waitForTimeout(2500);
   const before = (await ride(page)).speed;
   await tapObject(page, "hud", "siren");
-  await page.waitForTimeout(1200);
-  expect((await ride(page)).speed).toBeGreaterThan(before * 1.2);
+  await expect
+    .poll(async () => (await ride(page)).speed, { timeout: 5000 })
+    .toBeGreaterThan(before * 1.2);
   // Still cooling down: a second press does nothing.
   const sirenOn = () =>
     page.evaluate(
