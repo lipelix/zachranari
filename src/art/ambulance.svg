@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 224">
+  <defs>
+    <clipPath id="b"><path d="M14 50Q14 36 28 36L290 36Q302 36 308 46L352 104L396 114Q410 118 410 132L410 178Q410 186 402 186L370 186A40 40 0 0 0 290 186L130 186A40 40 0 0 0 50 186L22 186Q14 186 14 178Z"/></clipPath>
+    <pattern id="c" width="40" height="40" patternUnits="userSpaceOnUse" x="14" y="122">
+      <rect width="40" height="40" fill="#ffe11a"/><rect width="20" height="20" fill="#16a34a"/><rect x="20" y="20" width="20" height="20" fill="#16a34a"/>
+    </pattern>
+  </defs>
+  <rect x="236" y="24" width="56" height="14" rx="6" fill="#1e40af" stroke="#1f2937" stroke-width="4"/>
+  <rect x="34" y="24" width="40" height="14" rx="6" fill="#1e40af" stroke="#1f2937" stroke-width="4"/>
+  <path d="M14 50Q14 36 28 36L290 36Q302 36 308 46L352 104L396 114Q410 118 410 132L410 178Q410 186 402 186L370 186A40 40 0 0 0 290 186L130 186A40 40 0 0 0 50 186L22 186Q14 186 14 178Z" fill="#ffe11a"/>
+  <g clip-path="url(#b)">
+    <rect x="0" y="122" width="300" height="40" fill="url(#c)"/>
+    <rect x="300" y="128" width="120" height="16" fill="#16a34a"/>
+    <rect x="0" y="176" width="420" height="20" fill="#e5c40c"/>
+  </g>
+  <path d="M14 50Q14 36 28 36L290 36Q302 36 308 46L352 104L396 114Q410 118 410 132L410 178Q410 186 402 186L370 186A40 40 0 0 0 290 186L130 186A40 40 0 0 0 50 186L22 186Q14 186 14 178Z" fill="none" stroke="#1f2937" stroke-width="6" stroke-linejoin="round"/>
+  <path d="M302 54L340 104L302 104Z" fill="#bfe3ff" stroke="#1f2937" stroke-width="5" stroke-linejoin="round"/>
+  <rect x="236" y="54" width="54" height="50" rx="8" fill="#bfe3ff" stroke="#1f2937" stroke-width="5"/>
+  <path d="M244 62l12 0l-12 14z" fill="#fff" opacity=".7"/>
+  <line x1="230" y1="40" x2="230" y2="184" stroke="#1f2937" stroke-width="4"/>
+  <g transform="translate(128 80)">
+    <g fill="#1d4ed8" stroke="#fff" stroke-width="3">
+      <rect x="-9" y="-34" width="18" height="68" rx="3"/>
+      <rect x="-9" y="-34" width="18" height="68" rx="3" transform="rotate(60)"/>
+      <rect x="-9" y="-34" width="18" height="68" rx="3" transform="rotate(-60)"/>
+    </g>
+    <path d="M0-24V26M-6-14q12 6 0 12t0 12" stroke="#fff" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+  </g>
+  <text x="62" y="106" font-family="Arial Black,Arial,Helvetica,sans-serif" font-weight="900" font-size="30" fill="#1d4ed8" text-anchor="middle">155</text>
+  <text x="196" y="86" font-family="Arial Black,Arial,Helvetica,sans-serif" font-weight="900" font-size="18" fill="#1f2937" text-anchor="middle">ZZS</text>
+  <rect x="392" y="122" width="16" height="14" rx="4" fill="#fff7c2" stroke="#1f2937" stroke-width="3"/>
+  <rect x="16" y="140" width="10" height="20" rx="3" fill="#ef4444" stroke="#1f2937" stroke-width="3"/>
+</svg>

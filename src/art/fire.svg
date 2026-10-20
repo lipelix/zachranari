@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 460 224">
+  <defs>
+    <clipPath id="b"><path d="M14 60Q14 50 24 50L296 50L296 34Q296 26 306 26L420 26Q434 26 440 40L450 100L452 176Q452 186 442 186L418 186A38 38 0 0 0 342 186L213 186A38 38 0 0 0 137 186L133 186A38 38 0 0 0 57 186L24 186Q14 186 14 176Z"/></clipPath>
+  </defs>
+  <rect x="334" y="12" width="70" height="16" rx="7" fill="#1e40af" stroke="#1f2937" stroke-width="4"/>
+  <path d="M14 60Q14 50 24 50L296 50L296 34Q296 26 306 26L420 26Q434 26 440 40L450 100L452 176Q452 186 442 186L418 186A38 38 0 0 0 342 186L213 186A38 38 0 0 0 137 186L133 186A38 38 0 0 0 57 186L24 186Q14 186 14 176Z" fill="#dc2626"/>
+  <g clip-path="url(#b)">
+    <rect x="0" y="146" width="460" height="16" fill="#fff"/>
+    <rect x="0" y="174" width="460" height="20" fill="#b91c1c"/>
+  </g>
+  <g stroke="#991b1b" stroke-width="3">
+    <rect x="28" y="62" width="120" height="76" rx="6" fill="#ef4444"/>
+    <rect x="160" y="62" width="122" height="76" rx="6" fill="#ef4444"/>
+    <path d="M28 76H148M28 90H148M28 104H148M28 118H148M160 76H282M160 90H282M160 104H282M160 118H282" fill="none"/>
+  </g>
+  <path d="M14 60Q14 50 24 50L296 50L296 34Q296 26 306 26L420 26Q434 26 440 40L450 100L452 176Q452 186 442 186L418 186A38 38 0 0 0 342 186L213 186A38 38 0 0 0 137 186L133 186A38 38 0 0 0 57 186L24 186Q14 186 14 176Z" fill="none" stroke="#1f2937" stroke-width="6" stroke-linejoin="round"/>
+  <line x1="296" y1="50" x2="296" y2="184" stroke="#1f2937" stroke-width="5"/>
+  <path d="M400 38L428 38Q432 38 433 42L442 98L400 98Z" fill="#bfe3ff" stroke="#1f2937" stroke-width="5" stroke-linejoin="round"/>
+  <rect x="312" y="38" width="76" height="60" rx="8" fill="#bfe3ff" stroke="#1f2937" stroke-width="5"/>
+  <path d="M320 46l14 0l-14 16z" fill="#fff" opacity=".7"/>
+  <text x="350" y="134" font-family="Arial Black,Arial,Helvetica,sans-serif" font-weight="900" font-size="30" fill="#fff" stroke="#991b1b" stroke-width="1.5" text-anchor="middle">150</text>
+  <text x="155" y="114" font-family="Arial Black,Arial,Helvetica,sans-serif" font-weight="900" font-size="40" fill="#fff" stroke="#991b1b" stroke-width="2" text-anchor="middle">HASIČI</text>
+  <g stroke="#1f2937" stroke-width="3" fill="#d4d4d8">
+    <rect x="22" y="30" width="270" height="8" rx="3"/>
+    <rect x="22" y="42" width="270" height="8" rx="3"/>
+    <path d="M40 34v12M64 34v12M88 34v12M112 34v12M136 34v12M160 34v12M184 34v12M208 34v12M232 34v12M256 34v12M280 34v12" fill="none"/>
+  </g>
+  <rect x="438" y="112" width="14" height="16" rx="4" fill="#fff7c2" stroke="#1f2937" stroke-width="3"/>
+  <rect x="16" y="150" width="8" height="20" rx="3" fill="#fbbf24" stroke="#1f2937" stroke-width="3"/>
+</svg>

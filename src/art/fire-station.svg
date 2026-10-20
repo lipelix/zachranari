@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 300">
+  <rect x="226" y="10" width="54" height="120" fill="#fca5a5" stroke="#334155" stroke-width="6"/>
+  <rect x="236" y="30" width="34" height="26" rx="3" fill="#bfe3ff" stroke="#334155" stroke-width="4"/>
+  <rect x="20" y="80" width="280" height="216" rx="6" fill="#fecaca" stroke="#334155" stroke-width="6"/>
+  <rect x="20" y="80" width="280" height="46" fill="#dc2626" stroke="#334155" stroke-width="6"/>
+  <text x="160" y="116" font-family="Arial Black,Arial,Helvetica,sans-serif" font-weight="900" font-size="30" fill="#fff" text-anchor="middle">HASIČI</text>
+  <g fill="#dc2626" stroke="#334155" stroke-width="5">
+    <rect x="40" y="148" width="110" height="148" rx="6"/><rect x="170" y="148" width="110" height="148" rx="6"/>
+  </g>
+  <path d="M40 176h110M40 204h110M40 232h110M40 260h110M170 176h110M170 204h110M170 232h110M170 260h110" stroke="#991b1b" stroke-width="4"/>
+</svg>

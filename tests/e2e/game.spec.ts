@@ -1,0 +1,133 @@
+import { expect, test } from "@playwright/test";
+import {
+  activeScenes,
+  drainTank,
+  openGarage,
+  positionOf,
+  ride,
+  tapObject,
+  waitForScene,
+} from "./helpers";
+
+test("the garage offers the three services", async ({ page }) => {
+  await openGarage(page);
+  for (const id of ["ambulance", "police", "fire"]) {
+    const { x, y } = await positionOf(page, "garage", `card-${id}`);
+    const box = page.viewportSize();
+    expect(x).toBeGreaterThan(0);
+    expect(y).toBeGreaterThan(0);
+    expect(x).toBeLessThan(box?.width ?? 0);
+    expect(y).toBeLessThan(box?.height ?? 0);
+  }
+});
+
+test("one tap picks a car, it drives on its own and a tap jumps", async ({
+  page,
+}) => {
+  const errors: string[] = [];
+  page.on("pageerror", (e) => errors.push(e.message));
+  await openGarage(page);
+  await tapObject(page, "garage", "card-fire");
+  await waitForScene(page, "race");
+  await waitForScene(page, "hud");
+
+  const start = await ride(page);
+  await page.waitForTimeout(1500);
+  const later = await ride(page);
+  expect(later.distance).toBeGreaterThan(start.distance + 5);
+  expect(later.fuel).toBeLessThan(1);
+
+  // A tap on the road (not on a button) jumps.
+  const size = page.viewportSize();
+  await page.mouse.click((size?.width ?? 0) / 2, (size?.height ?? 0) / 2);
+  await expect
+    .poll(() =>
+      page.evaluate(
+        () =>
+          (
+            window.__game.scene.getScene("race") as unknown as {
+              height: number;
+            }
+          ).height,
+      ),
+    )
+    .toBeGreaterThan(20);
+  expect(errors).toEqual([]);
+});
+
+test("the siren lights up and pushes the car forward", async ({ page }) => {
+  await openGarage(page);
+  await tapObject(page, "garage", "card-police");
+  await waitForScene(page, "hud");
+  await page.waitForTimeout(2500);
+  const before = (await ride(page)).speed;
+  await tapObject(page, "hud", "siren");
+  await page.waitForTimeout(1200);
+  expect((await ride(page)).speed).toBeGreaterThan(before * 1.2);
+  // Still cooling down: a second press does nothing.
+  const sirenOn = () =>
+    page.evaluate(
+      () =>
+        (
+          window.__game.scene.getScene("race") as unknown as {
+            car: { sirenOn: boolean };
+          }
+        ).car.sirenOn,
+    );
+  await expect.poll(sirenOn, { timeout: 4000 }).toBe(false);
+  await tapObject(page, "hud", "siren");
+  expect(await sirenOn()).toBe(false);
+});
+
+test("an empty tank ends in a celebration, then ride again or pick another car", async ({
+  page,
+}) => {
+  await openGarage(page);
+  await tapObject(page, "garage", "card-ambulance");
+  await waitForScene(page, "hud");
+  await page.waitForTimeout(1500);
+  await drainTank(page);
+  await waitForScene(page, "end");
+  expect(await activeScenes(page)).not.toContain("hud");
+  const done = await ride(page);
+  expect(done.finished).toBe(true);
+
+  // A best score is kept for the garage.
+  const best = await page.evaluate(() =>
+    localStorage.getItem("zachranari.best.v1"),
+  );
+  expect(JSON.parse(best ?? "{}")).toHaveProperty("ambulance");
+
+  // Buttons appear after a pause, so frantic taps do not skip the celebration.
+  await page.waitForTimeout(1800);
+  await tapObject(page, "end", "again");
+  await waitForScene(page, "hud");
+  expect(await activeScenes(page)).not.toContain("end");
+  expect((await ride(page)).distance).toBeLessThan(done.distance);
+
+  await drainTank(page);
+  await waitForScene(page, "end");
+  await page.waitForTimeout(1800);
+  await tapObject(page, "end", "garage");
+  await waitForScene(page, "garage");
+  expect(await activeScenes(page)).toEqual(["garage"]);
+});
+
+test("home leaves the ride only when held", async ({ page }) => {
+  await openGarage(page);
+  await tapObject(page, "garage", "card-police");
+  await waitForScene(page, "hud");
+  await page.waitForTimeout(800);
+
+  await tapObject(page, "hud", "home");
+  await page.waitForTimeout(1200);
+  expect(await activeScenes(page)).toContain("race");
+
+  const { x, y } = await positionOf(page, "hud", "home");
+  await page.mouse.move(x, y);
+  await page.mouse.down();
+  await page.waitForTimeout(1300);
+  await page.mouse.up();
+  await waitForScene(page, "garage");
+  expect(await activeScenes(page)).toEqual(["garage"]);
+});

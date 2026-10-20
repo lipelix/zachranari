@@ -1,0 +1,24 @@
+html,
+body {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+  background: #38a6f5;
+  overscroll-behavior: none;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+#app,
+#app canvas {
+  display: block;
+  touch-action: none;
+}
+
+#app {
+  position: fixed;
+  inset: 0;
+}
