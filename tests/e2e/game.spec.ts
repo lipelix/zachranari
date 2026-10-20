@@ -133,3 +133,26 @@ test("home leaves the ride only when held", async ({ page }) => {
   await waitForScene(page, "garage");
   expect(await activeScenes(page)).toEqual(["garage"]);
 });
+
+test("picking things up keeps the ride going (sound, buzz and speech never stop it)", async ({
+  page,
+}) => {
+  // Under parallel load software WebGL runs at a few frames a second: 80 m takes a while.
+  test.setTimeout(120_000);
+  const errors: string[] = [];
+  page.on("pageerror", (e) => errors.push(e.message));
+  await openGarage(page);
+  await tapObject(page, "garage", "card-ambulance");
+  await waitForScene(page, "hud");
+  // The first canister lies on the road somewhere in 70–110 m: driving takes it
+  // (without it the tank would be below 0.6 at 120 m).
+  await expect
+    .poll(async () => (await ride(page)).distance, { timeout: 90_000 })
+    .toBeGreaterThan(120);
+  const taken = await ride(page);
+  expect(taken.fuel).toBeGreaterThan(0.75);
+  await expect
+    .poll(async () => (await ride(page)).distance, { timeout: 10_000 })
+    .toBeGreaterThan(taken.distance + 5);
+  expect(errors).toEqual([]);
+});

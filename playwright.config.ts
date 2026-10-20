@@ -39,6 +39,12 @@ export default defineConfig({
       testIgnore: /pwa\.spec\.ts/,
       use: { ...devices["Galaxy Tab S9 landscape"], ...oneX },
     },
+    // Safari (iPhone, iPad): WebKit lacks APIs Chromium has, e.g. navigator.vibrate.
+    {
+      name: "iphone",
+      testIgnore: /pwa\.spec\.ts/,
+      use: { ...devices["iPhone 13 landscape"], ...oneX },
+    },
     {
       name: "pwa",
       testMatch: /pwa\.spec\.ts/,

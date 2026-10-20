@@ -4,30 +4,50 @@ import type { SirenKind } from "../game/vehicles";
  * Every sound is synthesised with Web Audio: no files to download, works offline, and
  * the volume stays soft for small ears. The context starts on the first tap (browsers
  * keep audio locked until then).
+ *
+ * Sound, speech and vibration are extras: they run inside `safely`, so a browser that
+ * lacks one (Safari has no `navigator.vibrate`) never stops the game loop.
  */
 let ctx: AudioContext | undefined;
 let master: GainNode | undefined;
-let muted = localStorage.getItem("zachranari.muted") === "1";
+let muted = safely(
+  () => localStorage.getItem("zachranari.muted") === "1",
+  false,
+);
+
+/** Runs a feedback effect; any error is logged and swallowed. */
+function safely<T>(effect: () => T, otherwise: T): T {
+  try {
+    return effect();
+  } catch (error) {
+    console.warn("Feedback effect failed", error);
+    return otherwise;
+  }
+}
 
 const VOLUME = 0.32;
 
 export function unlockAudio(): void {
-  if (!ctx) {
-    ctx = new AudioContext();
-    master = ctx.createGain();
-    master.gain.value = muted ? 0 : VOLUME;
-    master.connect(ctx.destination);
-  }
-  if (ctx.state === "suspended") void ctx.resume();
+  safely(() => {
+    if (!ctx) {
+      ctx = new AudioContext();
+      master = ctx.createGain();
+      master.gain.value = muted ? 0 : VOLUME;
+      master.connect(ctx.destination);
+    }
+    if (ctx.state === "suspended") void ctx.resume().catch(() => undefined);
+  }, undefined);
 }
 
 export const isMuted = (): boolean => muted;
 
 export function setMuted(value: boolean): void {
   muted = value;
-  localStorage.setItem("zachranari.muted", value ? "1" : "0");
-  if (master && ctx)
-    master.gain.setTargetAtTime(value ? 0 : VOLUME, ctx.currentTime, 0.02);
+  safely(() => {
+    localStorage.setItem("zachranari.muted", value ? "1" : "0");
+    if (master && ctx)
+      master.gain.setTargetAtTime(value ? 0 : VOLUME, ctx.currentTime, 0.02);
+  }, undefined);
 }
 
 interface Note {
@@ -42,6 +62,10 @@ interface Note {
 }
 
 function play(notes: readonly Note[]): void {
+  safely(() => schedule(notes), undefined);
+}
+
+function schedule(notes: readonly Note[]): void {
   if (!ctx || !master) return;
   const now = ctx.currentTime;
   for (const n of notes) {
@@ -139,7 +163,11 @@ export const sfx = {
 
 /** Says a short Czech phrase when the device has a Czech voice; silent otherwise. */
 export function say(text: string): void {
-  if (muted || !("speechSynthesis" in window)) return;
+  safely(() => speak(text), undefined);
+}
+
+function speak(text: string): void {
+  if (muted || typeof window.speechSynthesis?.getVoices !== "function") return;
   const voice = speechSynthesis
     .getVoices()
     .find((v) => v.lang.toLowerCase().startsWith("cs"));
@@ -155,5 +183,8 @@ export function say(text: string): void {
 
 /** A short buzz on phones that can (Android); ignored elsewhere. */
 export function buzz(ms: number): void {
-  if ("vibrate" in navigator) navigator.vibrate(ms);
+  // Safari has the name but no function: check the type, not the key.
+  safely(() => {
+    if (typeof navigator.vibrate === "function") navigator.vibrate(ms);
+  }, undefined);
 }
