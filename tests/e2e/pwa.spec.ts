@@ -1,11 +1,13 @@
 import { expect, test } from "@playwright/test";
 
+// baseURL is the game's folder (/zachranari/, as on GitHub Pages): paths stay relative.
+
 test("installable: manifest, icons and a service worker", async ({
   page,
   request,
 }) => {
-  await page.goto("/");
-  const manifest = await (await request.get("/manifest.webmanifest")).json();
+  await page.goto("./");
+  const manifest = await (await request.get("manifest.webmanifest")).json();
   expect(manifest.name).toBe("Záchranáři");
   expect(manifest.display).toBe("fullscreen");
   for (const icon of manifest.icons as { src: string }[])
@@ -13,13 +15,34 @@ test("installable: manifest, icons and a service worker", async ({
   const scope = await page.evaluate(
     async () => (await navigator.serviceWorker.ready).scope,
   );
-  expect(scope).toMatch(/\/$/);
+  expect(new URL(scope).pathname).toBe("/zachranari/");
   // Development hooks are not in the production build.
   expect(await page.evaluate(() => "__game" in window)).toBe(false);
 });
 
+test("loads everything from its folder", async ({ page }) => {
+  const bad: string[] = [];
+  page.on("response", (r) => {
+    if (r.status() >= 400) bad.push(`${r.status()} ${r.url()}`);
+  });
+  page.on("request", (r) => {
+    // Phaser turns SVGs into blob: images; only network requests must stay in the folder.
+    const url = new URL(r.url());
+    if (
+      url.protocol.startsWith("http") &&
+      !url.pathname.startsWith("/zachranari/")
+    )
+      bad.push(`outside: ${r.url()}`);
+  });
+  page.on("pageerror", (e) => bad.push(e.message));
+  await page.goto("./");
+  await expect(page.locator("#app canvas")).toBeVisible();
+  await page.waitForTimeout(1500);
+  expect(bad).toEqual([]);
+});
+
 test("starts offline once it has been opened", async ({ page, context }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.evaluate(async () => {
     await navigator.serviceWorker.ready;
   });

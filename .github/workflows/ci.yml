@@ -3,6 +3,13 @@ on:
   push:
     branches: [main]
   pull_request:
+  workflow_dispatch:
+
+# One deployment at a time; a newer push replaces a queued one.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   check:
     # Hosted runners unless the RUNNER_LABELS repo variable picks a self-hosted one.
@@ -15,9 +22,28 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run check
-      - run: npm run build
       - run: npm run pwa:icons -- --check
       - run: npx playwright install --with-deps chromium
       - run: npm run test:e2e
         env:
           CI: "true"
+      - run: npm run build
+      - uses: actions/upload-pages-artifact@v3
+        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+        with:
+          path: dist
+
+  # https://lipelix.github.io/zachranari/ (the build uses relative URLs, so the folder works).
+  deploy:
+    needs: check
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

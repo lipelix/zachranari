@@ -61,6 +61,8 @@ function serviceWorkerPlugin(version: string): Plugin {
 
 export default defineConfig({
   plugins: [serviceWorkerPlugin(pkg.version)],
+  // Relative URLs: one build serves from a host's root (Docker) or a sub-folder (Pages).
+  base: "./",
   // SVG art stays as files: Phaser loads them by URL and the worker precaches them.
   build: {
     target: "es2023",

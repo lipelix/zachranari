@@ -5,13 +5,17 @@ engine (150), the car drives by itself, a tap anywhere jumps, the siren button g
 short push. Nothing can crash; the ride ends when the tank is empty. Phaser 4 + Vite +
 TypeScript, shipped as an offline PWA.
 
+Live: https://lipelix.github.io/zachranari/ (GitHub Pages, deployed by `ci.yml` on every
+push to `main` after the checks pass). The build uses relative URLs (`base: "./"`), so the
+same `dist/` also serves from a host's root (Docker).
+
 ## Commands
 
 ```bash
 npm run dev            # http://localhost:5173 (window.__game exposed in dev only)
 npm run check          # prettier + eslint + tsc + vitest
 npm run build          # dist/ with a generated sw.js (needs git or GAME_COMMIT)
-npm run test:e2e       # Playwright: phone landscape/portrait, tablet, pwa (offline)
+npm run test:e2e       # Playwright: phone landscape/portrait, tablet, pwa (offline, in /zachranari/)
 npm run pwa:icons      # re-render public/icons/*.png from icon.svg (-- --check in CI)
 docker build --build-arg GAME_COMMIT=$(git rev-parse --short HEAD) -t zachranari .
 ```
