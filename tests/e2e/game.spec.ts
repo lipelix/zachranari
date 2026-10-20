@@ -66,19 +66,17 @@ test("the siren lights up and pushes the car forward", async ({ page }) => {
   await expect
     .poll(async () => (await ride(page)).speed, { timeout: 5000 })
     .toBeGreaterThan(before * 1.2);
-  // Still cooling down: a second press does nothing.
-  const sirenOn = () =>
-    page.evaluate(
-      () =>
-        (
-          window.__game.scene.getScene("race") as unknown as {
-            car: { sirenOn: boolean };
-          }
-        ).car.sirenOn,
-    );
-  await expect.poll(sirenOn, { timeout: 4000 }).toBe(false);
-  await tapObject(page, "hud", "siren");
-  expect(await sirenOn()).toBe(false);
+  // While it cools down, another press does nothing. Checked in one step: on a slow
+  // runner the cooldown could run out between two separate calls.
+  const again = await page.evaluate(() => {
+    const race = window.__game.scene.getScene("race") as unknown as {
+      snapshot: () => { sirenReady: number };
+      sirenNow: () => boolean;
+    };
+    return { ready: race.snapshot().sirenReady, accepted: race.sirenNow() };
+  });
+  expect(again.ready).toBeLessThan(1);
+  expect(again.accepted).toBe(false);
 });
 
 test("an empty tank ends in a celebration, then ride again or pick another car", async ({
