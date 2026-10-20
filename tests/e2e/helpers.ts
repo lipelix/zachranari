@@ -3,7 +3,10 @@ import { expect, type Page } from "@playwright/test";
 /** The running scenes, top last. */
 export const activeScenes = (page: Page): Promise<string[]> =>
   page.evaluate(() =>
-    window.__game.scene.getScenes(true).map((s) => s.scene.key),
+    // The game starts once the font is loaded: nothing runs before that.
+    "__game" in window
+      ? window.__game.scene.getScenes(true).map((s) => s.scene.key)
+      : [],
   );
 
 export async function waitForScene(page: Page, key: string): Promise<void> {
